@@ -16,7 +16,7 @@ records automatically, add these CNAMEs in the `austxu.dev` zone:
 
 ```text
 @       -> austxu-dev.pages.dev
-coup    -> coup.pages.dev
+coup    -> coup-9ev.pages.dev
 heston  -> heston.pages.dev
 ```
 
