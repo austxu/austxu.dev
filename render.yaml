@@ -1,39 +1,43 @@
 projects:
   - name: austxu.dev
     environments:
-      - name: staging
+      - name: production
         services:
-          - name: coup-api-staging
+          - name: coup-api
             type: web
             runtime: python
             plan: free
             repo: https://github.com/austxu/coup-RL-bot
-            branch: feature/cloudflare-render-migration
+            branch: main
             buildCommand: python -m pip install --upgrade pip && python -m pip install -r requirements.txt && python -m pip install -r requirements_web.txt
             startCommand: python web.py
             healthCheckPath: /health
             autoDeployTrigger: checksPass
+            domains:
+              - coup-api.austxu.dev
             envVars:
               - key: SECRET_KEY
                 generateValue: true
               - key: COUP_ALLOWED_ORIGINS
-                value: https://coup.austxu.dev,https://staging.coup.austxu.dev,http://localhost:3000,http://localhost:5173
+                value: https://coup.austxu.dev,http://localhost:3000,http://localhost:5173
 
-          - name: heston-api-staging
+          - name: heston-api
             type: web
             runtime: docker
             plan: free
             repo: https://github.com/austxu/heston-regime-lab
-            branch: feature/cloudflare-render-migration
+            branch: master
             dockerfilePath: docker/Dockerfile.api
             healthCheckPath: /health
             autoDeployTrigger: checksPass
+            domains:
+              - heston-api.austxu.dev
             envVars:
               - key: ENVIRONMENT
-                value: staging
+                value: production
               - key: HRL_OFFLINE
                 value: "1"
               - key: LOG_FORMAT
                 value: json
               - key: CORS_ORIGINS
-                value: https://heston.austxu.dev,https://staging.heston.austxu.dev
+                value: https://heston.austxu.dev
