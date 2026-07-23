@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "source": {
+    "repository": "not-published",
+    "tag": "not-published",
+    "commit": "not-published"
+  },
+  "evidenceChecksum": "sha256:pending-public-bundle",
+  "evidenceStatus": "editorial-export-only",
+  "campaignCells": [
+    { "model": "Llama 3.1", "phase": "decode", "controlThroughput": null, "candidateThroughput": null, "pairedGain": 3.095, "confidenceInterval": [2.773, 3.491], "decision": "accepted" },
+    { "model": "Mistral", "phase": "decode", "controlThroughput": null, "candidateThroughput": null, "pairedGain": 2.878, "confidenceInterval": [2.425, 3.330], "decision": "accepted" },
+    { "model": "Llama 2", "phase": "decode / FA-on", "controlThroughput": null, "candidateThroughput": 84.097, "pairedGain": 3.969, "confidenceInterval": [3.969, 3.969], "decision": "accepted" },
+    { "model": "Llama 3.1", "phase": "prompt processing", "controlThroughput": null, "candidateThroughput": null, "pairedGain": -0.007, "confidenceInterval": [-0.007, -0.007], "decision": "neutral" }
+  ],
+  "negativeResults": [
+    { "model": "Qwen", "phase": "numerical path", "summary": "Rejected after the correctness gate; the numerical result is intentionally not promoted." }
+  ],
+  "protocol": { "cycles": ["A1", "B1", "B2", "A2"], "samplesPerInvocation": 7, "bootstrapReplicates": 100000 }
+}

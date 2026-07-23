@@ -1,0 +1,136 @@
+---
+title: Three Percent, Honestly: Optimizing LLM Decode on an RX 6700 XT
+summary: The important result is not a record claim. It is extracting a repeatable hot-loop improvement from accessible consumer hardware while treating correctness, thermals, failed experiments, and provenance as first-class results.
+publishedAt: 2026-07-23
+tags: ["AMD", "inference", "Vulkan", "benchmarking"]
+hero: /data/amd-inference.json
+draft: false
+---
+
+The most interesting benchmark result in this project is also the least cinematic one: a few percentage points, repeated under a protocol that made it difficult to tell a lucky run from a real change.
+
+That distinction matters. The RX 6700 XT is not a data-center accelerator, and this work is not a claim about a public leaderboard. It is a study of whether an accessible consumer GPU can expose a useful, repeatable improvement in the decode hot loop of quantized `llama.cpp` execution. The answer, under the measured conditions, was yes. The answer was not yes for every model, every path, or every experiment. Keeping both statements together is the result.
+
+## The result, before the story
+
+For the audited Llama 3.1 decode campaign, the measured improvements fell between +2.773% and +3.491%, with a +3.095% geometric mean. Mistral decode moved between +2.425% and +3.330%. Llama 2 with flash attention enabled reached 84.097 tokens per second and improved by +3.969%. Prompt processing for Llama 3.1 was effectively neutral at −0.007%.
+
+These numbers are intentionally narrow. They describe a particular stack, a particular device, and a particular set of gates. They do not imply MLPerf results, general AMD leadership, or a public scoreboard record. A benchmark is more useful when its boundary is easy to see.
+
+<!-- figure: confidence -->
+
+The study was designed around a repeated path rather than a single spectacular endpoint. Decode runs the same kind of small, latency-sensitive work again and again. If a small change reduces overhead in that repeated path, the improvement can matter even when the percentage looks modest. But a small percentage is also easy to fake accidentally: a thermal drift, a changed clock, a different process state, or a correctness regression can all make a chart look more exciting than the system actually is.
+
+## Why this GPU, why Vulkan
+
+The RX 6700 XT was useful because it was available, constrained, and representative of hardware a researcher might already own. It has enough compute to make the experiment nontrivial, but not the kind of infrastructure that lets every inefficiency hide behind a large margin. That makes it a good inference laboratory. It forces the question down to memory movement, dispatch shape, quantization work, staging, and the cost of synchronization.
+
+Vulkan was useful for a related reason. It exposes the work close enough to the device that the shape of the hot loop remains visible. The project could look at the path through a practical GPU backend rather than treating the accelerator as an opaque service. That visibility does not make the result universal. It makes the result inspectable.
+
+There is also a mundane reason to choose a consumer GPU: reproducibility is not only about publishing a number. It is about leaving another researcher with a plausible way to recreate the conditions. Hardware availability, a documented backend, and a bounded thermal envelope are part of that story.
+
+## Where decode time goes
+
+Quantized decode is a chain of small costs. The model has already consumed the prompt; each next-token step must move through the relevant layers, read quantized weights, reconstruct enough signal to multiply and accumulate, apply attention, and return logits to the sampler. The work is not one giant matrix multiply with infinite arithmetic intensity. It is many repeated operations with memory access and staging decisions close to the critical path.
+
+The result is that a few details can matter disproportionately. A path that reads a small block inefficiently pays the cost every token. A staging buffer that is rebuilt or synchronized too eagerly becomes a recurring tax. A projection that could have used a grouped layout instead performs redundant setup. The attention sidecar can be small relative to the whole model and still be important if it sits on the path that every decode step touches.
+
+The optimization target was therefore not “make the GPU faster” in the abstract. It was “remove repeatable overhead from the part of quantized decode that executes again and again, without changing what the computation means.” That constraint shaped every accepted change.
+
+## The two-row MMVQ change
+
+The first useful direction was a two-row MMVQ arrangement. The exact implementation details belong with the code and the public evidence bundle; the editorial point is simpler. The work reorganized a small quantized operation so that the device could consume the relevant rows with a more useful shape and less repeated setup.
+
+This is not a magic kernel. It is a bet about the granularity at which data arrives, is staged, and is reused. At the wrong granularity, a kernel can spend as much time preparing the operation as executing it. At a more suitable granularity, the same underlying math can spend more of its budget doing useful work.
+
+The bet only counts if the output is still correct. A fast wrong answer is not a performance result. It is a new bug with a compelling chart.
+
+## Fused staging and grouped projection
+
+The next pair of changes was about the boundary between data movement and arithmetic. Fused staging reduced the number of places where the hot path had to hand off or prepare data before the operation could proceed. Grouped projection kept related work together so that the backend did not repeatedly pay the same organizational cost.
+
+These changes are easy to describe too heroically. They did not create a new model architecture. They did not eliminate the fundamental cost of reading weights or performing the projection. They improved the arrangement of work around an existing path, which is exactly why the result is portable as a lesson but bounded as a claim.
+
+The useful question is whether a future maintainer can recognize the pattern: find a repeated boundary, identify the setup cost, change the organization without changing behavior, then measure the same path with the same controls. The code is only half of the result. The protocol tells us whether the code did what we think it did.
+
+## The attention sidecar
+
+The attention-sidecar change followed the same principle. Attention is not the only thing happening in decode, and this study does not claim that it is. But a side path that is repeatedly prepared, synchronized, or copied can become visible when the rest of the work is already relatively efficient.
+
+The improvement here was to treat the sidecar as part of the whole decode system rather than as an implementation detail that could be ignored while looking at the main projection. That meant asking where its state lives, when it is ready, and how much work is done before the next token can continue.
+
+The phrase “sidecar” is helpful because it keeps the scale honest. The change did not rewrite attention. It removed a little friction from the route around the main operation. Repeated a large number of times, a little friction is still worth measuring.
+
+## Correctness before speed
+
+The correctness gate was a hard gate. Candidate changes that did not produce the expected numerical behavior were not allowed to become performance anecdotes. This is why the Qwen result is included in the record as a rejection rather than silently omitted.
+
+The Qwen experiment produced a numerical result that did not survive the correctness standard. The right conclusion was not that the optimization worked especially well for Qwen. The right conclusion was that this path, under this change, was not ready to be counted. Preserving the failure makes the accepted results more credible because it shows that the protocol had a way to say no.
+
+The same discipline applies to neutral results. Llama 3.1 prompt processing was effectively neutral at −0.007%. That is not a disappointing footnote. It says something about where the changes belong: the improvement was specific to decode, not a broad acceleration of every phase of inference.
+
+## Three cycles, seven samples, controlled heat
+
+The campaign used three A1/B1/B2/A2 cycles. Each cycle interleaved control and candidate conditions so the comparison was not simply “run the old thing, then run the new thing after the device has changed.” The exact sequence is short enough to explain and strict enough to expose drift.
+
+Each invocation contributed seven samples. That number is not a claim that seven is universally sufficient. It is the unit that was chosen for this campaign and then kept consistent across the comparisons. The important part is the repeated structure: the same invocation shape, the same sampling rule, and the same decision process for every candidate that made it into the comparison.
+
+<!-- figure: protocol -->
+
+Thermals were treated as a measurement variable. The controls watched temperature and the relevant device state, and the campaign used safeguards to keep an overheated or unstable run from becoming an accidental performance win. A warm GPU can be a faster GPU for a moment, a slower GPU later, or a GPU that has changed clocks in ways the benchmark did not record clearly. Those states need to be visible before a percentage is trusted.
+
+The practical lesson is a little unfashionable: the benchmark harness should be allowed to interrupt a run. A measurement is not more rigorous because it always finishes. It is more rigorous when it can distinguish a valid sample from a sample collected outside the declared envelope.
+
+## Why 100,000 deterministic bootstrap replicates
+
+The final summaries used 100,000 deterministic bootstrap replicates. The bootstrap was applied to the paired observations from the campaign rather than to a pile of unrelated runs. That matters because the comparison is about the candidate relative to its control under the same experiment structure.
+
+Deterministic resampling makes the reported interval reproducible. A future reader should be able to take the same exported samples, use the same seed and procedure, and recover the same confidence summary. This is not a replacement for collecting better data. It is a way to make the uncertainty calculation inspectable.
+
+The evidence export is versioned and validated during the site build. It includes a schema version, source reference fields, an evidence checksum, campaign cells, control and candidate throughput, paired gain, confidence intervals, decisions, and negative-result summaries. The website does not hand-enter chart labels in a component. The figures are derived from that export so the editorial layer has one place to check against.
+
+<!-- figure: evidence -->
+
+The checksum is not decoration. It gives the public artifact a way to say which evidence package a number belongs to. If the raw samples, README/results, evidence index, and public bundle do not agree, the site should not silently promote a more exciting result.
+
+## Audited results
+
+The Llama 3.1 decode campaign showed gains between +2.773% and +3.491%, with a +3.095% geometric mean. The interval across cells is more informative than a single best run because it shows how the result moved across the declared comparisons.
+
+Mistral decode showed gains between +2.425% and +3.330%. That range is directionally consistent with the Llama 3.1 result while remaining a separate observation. It is tempting to compress the two into one claim about “models,” but the honest unit is the audited model and path.
+
+Llama 2 with flash attention enabled reached 84.097 tokens per second and improved by +3.969%. The flash-attention setting is part of the result, not a footnote. A reader needs to know which path was active when deciding whether the comparison resembles their own deployment.
+
+Prompt processing for Llama 3.1 was effectively neutral at −0.007%. This boundary is useful. The work did not make a general promise about prompt ingestion, and it did not turn a decode-specific improvement into a system-wide claim.
+
+## Why a few percent matters
+
+If decode is part of an interactive loop, the same hot path runs for every generated token. A few percent removed from that path can reduce latency at the margin, increase the number of responses possible inside a fixed compute budget, or make an accessible device feel less constrained. The effect is not automatically dramatic. It is cumulative.
+
+The other reason a few percent matters is methodological. A small result is an invitation to inspect the experiment. It does not have enough spectacle to carry a weak protocol by itself. That pressure is useful. It encourages us to ask which phase changed, which devices were tested, how heat was controlled, whether the output remained correct, and whether another person can reproduce the comparison.
+
+This is also why the result should not be presented as general AMD leadership. The study says something about this device, this backend, this code path, and this campaign. It may suggest a direction for broader work. It is not a universal ranking.
+
+## From experiment to public release
+
+The path from a working experiment to a public release is mostly behavior-preserving organization. It means clearer CLI and test boundaries, a repository map that another person can follow, regression checks around the changed path, provenance review for the reported values, secret and PII review, and checksum verification across the public evidence bundle.
+
+That cleanup is an editorial and engineering responsibility, not a second benchmark. It should make the work easier to inspect without implying that the organization changed the measured result. The distinction is important: a better README is not a faster kernel, and a reorganized test boundary is not a new data point.
+
+The public release should therefore identify what was actually completed. It should show the source repository, tag, and commit when those references are ready; include the evidence checksum; explain the campaign cells; and preserve the negative result. If any of those pieces remain out of sync, the correct release behavior is to delay a claim rather than fill the gap with a confident sentence.
+
+## Reproduction and independent replication
+
+Reproduction begins with the environment: the RX 6700 XT, the Vulkan backend, the model configurations, the candidate and control revisions, and the thermal conditions. It continues through the exact invocation shape, the three A1/B1/B2/A2 cycles, seven samples per invocation, and the deterministic bootstrap procedure.
+
+Independent replication should be allowed to disagree. A different RX 6700 XT, driver, operating system, or cooling envelope may produce a different absolute throughput or a different gain. That does not automatically invalidate the study. It tells us which parts of the result are robust and which parts depend on the environment.
+
+The strongest future work would replicate the comparison on additional accessible devices, split the gains by kernel and model path, and upstream the behavior-preserving pieces only after the evidence and tests make their boundaries clear. This website does not open an upstream `llama.cpp` pull request as part of the project, and it does not claim that upstream adoption has happened.
+
+## What remains intentionally unpublished
+
+The later +11–14% retained-stack results are not included in the public narrative yet. They can appear as an evidence-gated epilogue only after raw samples, checksums, the public evidence bundle, README/results, and the evidence index are synchronized. Until then, the omission is part of the result.
+
+That is the real thesis of the project. The record is not “an RX 6700 XT was made fast.” The record is that a constrained, repeatable hot-loop improvement was extracted from accessible hardware, tested against correctness and heat, summarized with deterministic uncertainty, and surrounded by the failures that make the accepted numbers believable.
+
+Three percent is not a record claim. It is a small result with enough provenance to travel.
