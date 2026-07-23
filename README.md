@@ -29,7 +29,7 @@ npm test
 - `/work/heston-regime-lab` — Heston regime lab case study and shell
 - `/blog` and `/blog/three-percent-honestly` — local MDX notes
 - `/about` — background and contact methods
-- `/coup` and `/heston` — static frontend shells for the future subdomain deployments
+- `/coup` and `/heston` — static frontend shells for the future subdomain deployments; Coup is staging-only in v1
 - `/rss.xml`, `/sitemap.xml`, `/robots.txt`, and custom 404
 
 ## Evidence and content
