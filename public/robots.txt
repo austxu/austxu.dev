@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://austxu.dev/sitemap.xml
+Host: https://austxu.dev

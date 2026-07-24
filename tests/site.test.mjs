@@ -8,7 +8,7 @@ test("the site contains the requested public routes", async () => {
   const routes = [
     "app/page.tsx", "app/projects/page.tsx", "app/work/amd-inference/page.tsx", "app/work/coup-rl-bot/page.tsx",
     "app/work/heston-regime-lab/page.tsx", "app/blog/page.tsx", "app/blog/three-percent-honestly/page.tsx",
-    "app/about/page.tsx", "app/not-found.tsx", "public/rss.xml", "public/sitemap.xml", "app/robots.ts",
+    "app/about/page.tsx", "app/not-found.tsx", "public/rss.xml", "public/sitemap.xml", "public/robots.txt",
   ];
   await Promise.all(routes.map((route) => access(new URL(route, root))));
 });
