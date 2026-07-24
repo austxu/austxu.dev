@@ -1,9 +1,11 @@
 # austxu.dev
 
 Focused, static-export compatible portfolio for Austin Xu: models, machines,
-and markets. The homepage is a four-panel technical dashboard for Home, Blog,
-Projects, and About. The intended public repository is `austxu/austxu.dev` and
-the canonical domain is `https://austxu.dev`.
+and markets. The homepage is a compact four-widget technical interface: code
+profile, research tags, Los Angeles map, and public project access. Home,
+About, Projects, and Blog live in the shared bottom dock. The intended public
+repository is `austxu/austxu.dev` and the canonical domain is
+`https://austxu.dev`.
 
 ## Local development
 
@@ -24,7 +26,7 @@ npm test
 
 ## Routes
 
-- `/` — four-room portfolio dashboard with a playful public project reveal
+- `/` — four-widget portfolio dashboard with a playful public project reveal
 - `/projects` — public overview of all three case studies
 - `/work/amd-inference` — audited AMD inference case study
 - `/work/coup-rl-bot` — Gen5 1v1 Coup case study and shell

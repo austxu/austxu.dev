@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     url: "https://austxu.dev",
     siteName: "Austin Xu",
     title: "Austin Xu — models, machines, markets",
-    description: "A focused four-panel research portfolio about faster inference, bluffing agents, and uncertain systems.",
+    description: "A compact four-widget technical portfolio spanning code, research systems, and public projects.",
     images: [{ url: "https://austxu.dev/og.png", width: 1200, height: 630, alt: "Austin Xu — models, machines, markets" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Austin Xu — models, machines, markets",
-    description: "Research across inference, deception, and volatility.",
+    description: "Code, research systems, and public projects from Austin Xu.",
     images: ["https://austxu.dev/og.png"],
   },
   icons: {
