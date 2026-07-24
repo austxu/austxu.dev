@@ -43,6 +43,7 @@ test("the homepage contains exactly Mitchell's four spatial left panels", async 
 });
 
 test("the location panel uses Mitchell's exact dotted-world geometry", async () => {
+  const styles = await readFile(new URL("app/globals.css", root), "utf8");
   await access(new URL("public/world-map-dots.png", root));
   const mapData = JSON.parse(
     await readFile(new URL("public/data/world-map-dots.json", root), "utf8"),
@@ -52,6 +53,8 @@ test("the location panel uses Mitchell's exact dotted-world geometry", async () 
   assert.equal(mapData.h, 482.987);
   assert.equal(mapData.r, 1.86);
   assert.equal(mapData.dots.length, 10764);
+  assert.match(styles, /\.location-marker\s*\{[^}]*left:\s*115px;[^}]*top:\s*144px;/s);
+  assert.match(styles, /\.location-tooltip\s*\{[^}]*left:\s*150px;[^}]*top:\s*144px;/s);
 });
 
 test("the project room reveals public case studies accessibly", async () => {
@@ -64,6 +67,7 @@ test("the project room reveals public case studies accessibly", async () => {
 
   assert.match(dashboard, /Boop the bear/i);
   assert.match(dashboard, /bear-cameo-reencoded\.png/);
+  assert.doesNotMatch(dashboard, /Three public systems case studies\. Open to everyone\./);
   assert.match(dashboard, /aria-expanded=/);
   assert.match(dashboard, /aria-controls=["']project-drawer["']/);
   assert.match(dashboard, /id=["']project-drawer["']/);
@@ -80,6 +84,22 @@ test("the project room reveals public case studies accessibly", async () => {
     projectSource,
     /type=["']password|passcode|localStorage|sessionStorage|document\.cookie/i,
   );
+});
+
+test("the bear brands the profile and site metadata", async () => {
+  const [layout, dashboard] = await readSources(
+    "app/layout.tsx",
+    "app/components/portfolio-dashboard.tsx",
+  );
+
+  assert.match(layout, /applicationName:\s*["']Austin's Portfolio["']/);
+  assert.match(layout, /default:\s*["']Austin's Portfolio["']/);
+  assert.match(layout, /template:\s*["']%s — Austin's Portfolio["']/);
+  assert.match(layout, /icons:\s*\{[\s\S]*bear-cameo-reencoded\.png/);
+  assert.doesNotMatch(layout, /favicon\.svg/);
+  assert.match(dashboard, /profile-avatar[\s\S]*bear-cameo-reencoded\.png/);
+  assert.match(dashboard, /👋/);
+  assert.doesNotMatch(dashboard, /👋🏻/);
 });
 
 test("the bottom dock has the requested order and social destinations remain present", async () => {

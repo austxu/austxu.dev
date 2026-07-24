@@ -96,8 +96,16 @@ const socialLinks = [
 function ProfileSummary({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={mobile ? "profile-summary mobile-profile" : "profile-summary desktop-profile"}>
-      <span className="profile-avatar" aria-hidden="true">AX</span>
-      <p>Hello, it’s Austin <span aria-hidden="true">👋🏻</span></p>
+      <span className="profile-avatar" aria-hidden="true">
+        <Image
+          src="/bear-cameo-reencoded.png"
+          alt=""
+          width={460}
+          height={460}
+          unoptimized
+        />
+      </span>
+      <p>Hello, it’s Austin <span aria-hidden="true">👋</span></p>
       <nav className="profile-socials" aria-label="Austin Xu on social media">
         {socialLinks.map(({ href, label, icon: Icon }) => (
           <a
@@ -394,9 +402,6 @@ function ProjectsPanel() {
                 <span aria-hidden="true">⌘</span>
                 <span>Boop to browse</span>
               </button>
-              <p className="project-note">
-                Three public systems case studies. Open to everyone.
-              </p>
             </div>
             <Link className="skeuo-button" href="/projects" tabIndex={projectsOpen ? -1 : undefined}>
               View projects

@@ -9,29 +9,31 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://austxu.dev"),
+  applicationName: "Austin's Portfolio",
   title: {
-    default: "Austin Xu — models, machines, markets",
-    template: "%s — Austin Xu",
+    default: "Austin's Portfolio",
+    template: "%s — Austin's Portfolio",
   },
   description: "Austin Xu is a researcher at StarAI, UCLA, building faster inference paths, bluffing agents, and tools for uncertain systems.",
   alternates: { canonical: "https://austxu.dev" },
   openGraph: {
     type: "website",
     url: "https://austxu.dev",
-    siteName: "Austin Xu",
-    title: "Austin Xu — models, machines, markets",
+    siteName: "Austin's Portfolio",
+    title: "Austin's Portfolio",
     description: "A compact four-widget technical portfolio spanning code, research systems, and public projects.",
-    images: [{ url: "https://austxu.dev/og.png", width: 1200, height: 630, alt: "Austin Xu — models, machines, markets" }],
+    images: [{ url: "https://austxu.dev/og.png", width: 1200, height: 630, alt: "Austin's Portfolio" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Austin Xu — models, machines, markets",
+    title: "Austin's Portfolio",
     description: "Code, research systems, and public projects from Austin Xu.",
     images: ["https://austxu.dev/og.png"],
   },
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
-    shortcut: "/favicon.svg",
+    icon: [{ url: "/bear-cameo-reencoded.png", type: "image/png", sizes: "460x460" }],
+    shortcut: "/bear-cameo-reencoded.png",
+    apple: [{ url: "/bear-cameo-reencoded.png", type: "image/png", sizes: "460x460" }],
   },
 };
 
