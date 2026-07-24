@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Austin&apos;s Portfolio — Blog</title>
+    <link>https://austxu.dev/blog</link>
+    <description>Research across inference, deception, and volatility.</description>
+    <item>
+      <title>Three Percent, Honestly: Optimizing LLM Decode on an RX 6700 XT</title>
+      <link>https://austxu.dev/blog/three-percent-honestly</link>
+      <guid>https://austxu.dev/blog/three-percent-honestly</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 GMT</pubDate>
+      <description>The important result is not a record claim. It is extracting a repeatable hot-loop improvement from accessible consumer hardware while treating correctness, thermals, failed experiments, and provenance as first-class results.</description>
+    </item>
+  </channel>
+</rss>

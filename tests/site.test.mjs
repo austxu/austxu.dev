@@ -6,19 +6,36 @@ const root = new URL("../", import.meta.url);
 
 test("the site contains the requested public routes", async () => {
   const routes = [
-    "app/page.tsx", "app/work/amd-inference/page.tsx", "app/work/coup-rl-bot/page.tsx",
+    "app/page.tsx", "app/projects/page.tsx", "app/work/amd-inference/page.tsx", "app/work/coup-rl-bot/page.tsx",
     "app/work/heston-regime-lab/page.tsx", "app/blog/page.tsx", "app/blog/three-percent-honestly/page.tsx",
-    "app/about/page.tsx", "app/not-found.tsx", "app/rss.xml/route.ts", "app/sitemap.ts", "app/robots.ts",
+    "app/about/page.tsx", "app/not-found.tsx", "public/rss.xml", "public/sitemap.xml", "app/robots.ts",
   ];
   await Promise.all(routes.map((route) => access(new URL(route, root))));
 });
 
-test("the homepage keeps backend-dependent actions out of first render", async () => {
+test("the forest gateway exposes the requested title and Home link", async () => {
   const page = await readFile(new URL("app/page.tsx", root), "utf8");
-  assert.match(page, /Explore the work/);
-  assert.match(page, /Read the AMD story/);
-  assert.match(page, /Cloudflare|cold|inference/i);
-  assert.doesNotMatch(page, /fetch\(|WebSocket|socket\.io/i);
+  const landing = await readFile(new URL("app/components/forest-landing.tsx", root), "utf8");
+  const layout = await readFile(new URL("app/layout.tsx", root), "utf8");
+  assert.match(page, /ForestLanding/);
+  assert.match(landing, /forest-home-tag/);
+  assert.match(landing, /href="\/about"/);
+  assert.match(landing, /HOME/);
+  assert.match(layout, /Austin's Portfolio/);
+  assert.doesNotMatch(landing, /fetch\(|WebSocket|socket\.io/i);
+});
+
+test("projects keep the three authored entries discoverable", async () => {
+  const page = await readFile(new URL("app/projects/page.tsx", root), "utf8");
+  assert.match(page, /amd-inference/);
+  assert.match(page, /coup-rl-bot/);
+  assert.match(page, /heston-regime-lab/);
+  assert.match(page, /Open case study/);
+});
+
+test("the interior navigation exposes the four top-level routes", async () => {
+  const shell = await readFile(new URL("app/components/site-shell.tsx", root), "utf8");
+  for (const href of ["/", "/about", "/projects", "/blog"]) assert.match(shell, new RegExp(`href: \\"${href.replace("/", "\\/")}\\"`));
 });
 
 test("the AMD article preserves evidence boundaries", async () => {
