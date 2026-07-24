@@ -18,7 +18,11 @@ export const metadata: Metadata = {
     images: [{ url: "/og.png", width: 1200, height: 630, alt: "Austin Xu — models, machines, markets" }],
   },
   twitter: { card: "summary_large_image", title: "Austin Xu — models, machines, markets", description: "Research across inference, deception, and volatility.", images: ["/og.png"] },
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
+  icons: {
+    icon: [{ url: "/bear-cameo.png", type: "image/png", sizes: "460x460" }],
+    shortcut: "/bear-cameo.png",
+    apple: "/bear-cameo.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
