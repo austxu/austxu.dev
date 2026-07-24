@@ -2,9 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const HESTON_URL = "https://heston.austxu.dev";
+interface EmbeddedLabProps {
+  url: string;
+  eyebrow: string;
+  meta: string;
+  title: string;
+}
 
-export default function EmbeddedLab() {
+export default function EmbeddedLab({ url, eyebrow, meta, title }: EmbeddedLabProps) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [fullscreen, setFullscreen] = useState(false);
 
@@ -27,22 +32,22 @@ export default function EmbeddedLab() {
     <section className="lab-embed" aria-labelledby="embedded-lab-title">
       <div className="lab-embed-toolbar">
         <div>
-          <p id="embedded-lab-title" className="eyebrow">Production lab / embedded view</p>
-          <p className="lab-embed-meta">heston.austxu.dev · live + synthetic provenance</p>
+          <p id="embedded-lab-title" className="eyebrow">{eyebrow}</p>
+          <p className="lab-embed-meta">{meta}</p>
         </div>
         <div className="lab-embed-actions">
           <button type="button" className="embed-control" onClick={() => void toggleFullscreen()}>
             {fullscreen ? "Exit fullscreen" : "Fullscreen"}
           </button>
-          <a className="embed-control embed-control-link" href={HESTON_URL} target="_blank" rel="noreferrer">
+          <a className="embed-control embed-control-link" href={url} target="_blank" rel="noreferrer">
             Open full tab <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>
       <div ref={frameRef} className="lab-embed-frame">
         <iframe
-          title="Heston regime lab"
-          src={HESTON_URL}
+          title={title}
+          src={url}
           allow="fullscreen"
           allowFullScreen
         />
