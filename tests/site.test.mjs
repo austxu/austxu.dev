@@ -81,6 +81,23 @@ test("the site navigation and social destinations are present", async () => {
   assert.match(dashboard, /https:\/\/x\.com\/austixu/);
 });
 
+test("the site uses the restrained technical type and color system", async () => {
+  const [layout, styles, dashboard] = await readSources(
+    "app/layout.tsx",
+    "app/globals.css",
+    "app/components/portfolio-dashboard.tsx",
+  );
+
+  assert.match(layout, /@fontsource\/inter\/latin-400\.css/);
+  assert.match(layout, /@fontsource\/roboto-mono\/latin-400\.css/);
+  assert.match(styles, /--sans:\s*"Inter"/);
+  assert.match(styles, /--mono:\s*"Roboto Mono"/);
+  assert.match(styles, /--paper:\s*#0d1117/i);
+  assert.doesNotMatch(styles, /#8c7cff|#ffd84d|#2d2496|#ff7a70/i);
+  const homeDeck = dashboard.match(/<p className="home-room-deck">([\s\S]*?)<\/p>/)?.[1] ?? "";
+  assert.doesNotMatch(homeDeck, /<strong>/i);
+});
+
 test("the AMD article preserves evidence boundaries", async () => {
   const article = await readFile(new URL("content/blog/three-percent-honestly.mdx", root), "utf8");
   assert.match(article, /Three Percent, Honestly/);

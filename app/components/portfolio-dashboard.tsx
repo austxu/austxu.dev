@@ -53,19 +53,18 @@ export function PortfolioDashboard({ latestPost }: { latestPost: LatestPost }) {
             aria-labelledby="home-room-title"
           >
             <div className="room-topline">
-              <span>Home</span>
-              <span>01 / Los Angeles</span>
+              <span>~/home</span>
+              <span>01 · Los Angeles</span>
             </div>
             <div className="home-room-copy">
-              <p className="room-kicker"><span className="status-dot" />Researcher at StarAI, UCLA</p>
+              <p className="room-kicker"><span className="status-dot" />Available · StarAI / UCLA</p>
               <h1 id="home-room-title">Austin Xu</h1>
               <p className="home-room-deck">
-                I chase the edge cases where <strong>models</strong> meet machines
-                and markets.
+                I build and study systems where models meet machines and markets.
               </p>
             </div>
             <div className="room-footer">
-              <span>Inference × agents × uncertain systems</span>
+              <span>inference / agents / uncertain systems</span>
               <span aria-hidden="true">↘</span>
             </div>
           </section>
@@ -76,8 +75,8 @@ export function PortfolioDashboard({ latestPost }: { latestPost: LatestPost }) {
             aria-labelledby="blog-room-title"
           >
             <div className="room-topline">
-              <span>Blog</span>
-              <span>02 / Field notes</span>
+              <span>~/blog</span>
+              <span>02 · Latest note</span>
             </div>
             <div className="blog-room-layout">
               <div className="blog-room-copy">
@@ -87,10 +86,10 @@ export function PortfolioDashboard({ latestPost }: { latestPost: LatestPost }) {
                 </h2>
                 <p>{latestPost.summary}</p>
               </div>
-              <div className="paper-stack" aria-hidden="true">
-                <span />
-                <span />
-                <span>+3.095%</span>
+              <div className="metric-tile" aria-hidden="true">
+                <span>benchmark.delta</span>
+                <strong>+3.095%</strong>
+                <span>geometric mean</span>
               </div>
             </div>
             <Link className="room-link" href={`/blog/${latestPost.slug}`}>
@@ -105,14 +104,14 @@ export function PortfolioDashboard({ latestPost }: { latestPost: LatestPost }) {
             aria-labelledby="projects-room-title"
           >
             <div className="room-topline room-topline-light">
-              <span>Projects</span>
-              <span>03 / Public portfolio</span>
+              <span>~/projects</span>
+              <span>03 · Public archive</span>
             </div>
             <div className="projects-stage">
               <div className="projects-intro">
-                <p className="room-kicker room-kicker-light">Three systems. No password.</p>
+                <p className="room-kicker room-kicker-light">Three public case studies</p>
                 <h2 id="projects-room-title">
-                  <Link href="/projects">Make the work inspectable.</Link>
+                  <Link href="/projects">Performance, agents, and uncertainty.</Link>
                 </h2>
               </div>
 
@@ -167,7 +166,7 @@ export function PortfolioDashboard({ latestPost }: { latestPost: LatestPost }) {
               {projectsOpen ? "Projects revealed. Three case-study links are now available." : ""}
             </p>
             <Link className="room-link room-link-light" href="/projects">
-              View all projects <span aria-hidden="true">↗</span>
+              Browse projects <span aria-hidden="true">↗</span>
             </Link>
           </section>
 
@@ -177,17 +176,17 @@ export function PortfolioDashboard({ latestPost }: { latestPost: LatestPost }) {
             aria-labelledby="about-room-title"
           >
             <div className="room-topline">
-              <span>About</span>
-              <span>04 / Open channel</span>
+              <span>~/about</span>
+              <span>04 · README</span>
             </div>
             <div className="about-room-copy">
-              <p className="room-kicker">Now</p>
+              <p className="room-kicker">Currently</p>
               <h2 id="about-room-title">
-                <Link href="/about">Build the instrument panel.</Link>
+                <Link href="/about">Research, systems, and interfaces.</Link>
               </h2>
               <p>
-                I work where research meets the systems that make it observable:
-                kernels, agents, interfaces, and evidence that can travel.
+                I turn research questions into working software, measurable
+                experiments, and clear technical artifacts.
               </p>
               <a className="about-email" href="mailto:austinxu@ucla.edu">
                 austinxu@ucla.edu <span aria-hidden="true">↗</span>

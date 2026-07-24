@@ -18,14 +18,8 @@ const projectNames: Record<(typeof projects)[number]["slug"], string> = {
 export default function Projects() {
   return (
     <PageFrame
-      eyebrow="Projects / public archive"
-      title={
-        <>
-          Research you can
-          <br />
-          <em>look inside.</em>
-        </>
-      }
+      eyebrow="~/projects"
+      title="Selected projects."
       intro="Three public case studies about making performance, hidden information, and changing regimes easier to inspect."
     >
       <section className="page-link-grid" aria-label="Project case studies">

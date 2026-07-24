@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import "@fontsource/inter/latin-400.css";
+import "@fontsource/inter/latin-500.css";
+import "@fontsource/inter/latin-600.css";
+import "@fontsource/roboto-mono/latin-400.css";
+import "@fontsource/roboto-mono/latin-500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +19,7 @@ export const metadata: Metadata = {
     url: "https://austxu.dev",
     siteName: "Austin Xu",
     title: "Austin Xu — models, machines, markets",
-    description: "A colorful four-room research portfolio about faster inference, bluffing agents, and uncertain systems.",
+    description: "A focused four-panel research portfolio about faster inference, bluffing agents, and uncertain systems.",
     images: [{ url: "https://austxu.dev/og.png", width: 1200, height: 630, alt: "Austin Xu — models, machines, markets" }],
   },
   twitter: {
@@ -24,9 +29,8 @@ export const metadata: Metadata = {
     images: ["https://austxu.dev/og.png"],
   },
   icons: {
-    icon: [{ url: "/bear-cameo.png", type: "image/png", sizes: "460x460" }],
-    shortcut: "/bear-cameo.png",
-    apple: "/bear-cameo.png",
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
   },
 };
 

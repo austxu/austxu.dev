@@ -1,9 +1,9 @@
 # austxu.dev
 
-Colorful, static-export compatible portfolio for Austin Xu: models, machines,
-and markets. The homepage is a four-room bento for Home, Blog, Projects, and
-About. The intended public repository is `austxu/austxu.dev` and the canonical
-domain is `https://austxu.dev`.
+Focused, static-export compatible portfolio for Austin Xu: models, machines,
+and markets. The homepage is a four-panel technical dashboard for Home, Blog,
+Projects, and About. The intended public repository is `austxu/austxu.dev` and
+the canonical domain is `https://austxu.dev`.
 
 ## Local development
 
