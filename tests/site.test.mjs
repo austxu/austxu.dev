@@ -35,26 +35,23 @@ test("the homepage contains exactly Mitchell's four spatial left panels", async 
   assert.match(source, /machines/i);
   assert.match(source, /markets/i);
   assert.match(source, /line-numbers/);
-  assert.match(source, /skill-cloud/);
-  assert.match(source, /dot-map/);
-  assert.match(source, /--tag-hue/);
+  assert.match(source, /PhysicsSkillCloud/);
+  assert.match(source, /InteractiveWorldMap/);
   assert.doesNotMatch(source, /continent-(?:na|sa|eu|af|as|au)/);
   assert.match(source, /role=["']switch["']/);
-  assert.doesNotMatch(source, /fetch\(|WebSocket|socket\.io/i);
+  assert.doesNotMatch(source, /WebSocket|socket\.io/i);
 });
 
-test("the location panel uses generated Natural Earth map data", async () => {
+test("the location panel uses Mitchell's exact dotted-world geometry", async () => {
   await access(new URL("public/world-map-dots.png", root));
   const mapData = JSON.parse(
     await readFile(new URL("public/data/world-map-dots.json", root), "utf8"),
   );
 
-  assert.equal(mapData.width, 1024);
-  assert.equal(mapData.height, 488);
-  assert.equal(mapData.projection.name, "webMercator");
-  assert.equal(mapData.projection.centralMeridian, 0);
-  assert.ok(mapData.dots.length > 4000);
-  assert.ok(mapData.dots.length < 7000);
+  assert.equal(mapData.w, 1024.59);
+  assert.equal(mapData.h, 482.987);
+  assert.equal(mapData.r, 1.86);
+  assert.equal(mapData.dots.length, 10764);
 });
 
 test("the project room reveals public case studies accessibly", async () => {
@@ -66,7 +63,7 @@ test("the project room reveals public case studies accessibly", async () => {
   const projectSource = `${dashboard}\n${projectsPage}`;
 
   assert.match(dashboard, /Boop the bear/i);
-  assert.match(dashboard, /bear-cameo\.png/);
+  assert.match(dashboard, /bear-cameo-reencoded\.png/);
   assert.match(dashboard, /aria-expanded=/);
   assert.match(dashboard, /aria-controls=["']project-drawer["']/);
   assert.match(dashboard, /id=["']project-drawer["']/);
@@ -86,9 +83,10 @@ test("the project room reveals public case studies accessibly", async () => {
 });
 
 test("the bottom dock has the requested order and social destinations remain present", async () => {
-  const [shell, dashboard] = await readSources(
+  const [shell, dashboard, about] = await readSources(
     "app/components/site-shell.tsx",
     "app/components/portfolio-dashboard.tsx",
+    "app/about/page.tsx",
   );
 
   const navigationItems = [...shell.matchAll(
@@ -106,21 +104,24 @@ test("the bottom dock has the requested order and social destinations remain pre
   assert.match(shell, /aria-current=/);
   assert.match(dashboard, /<PrimaryDock\s*\/>/);
 
-  assert.match(dashboard, /https:\/\/github\.com\/austxu/);
-  assert.match(dashboard, /https:\/\/www\.linkedin\.com\/in\/axu25/);
-  assert.match(dashboard, /https:\/\/x\.com\/austixu/);
+  assert.match(about, /https:\/\/github\.com\/austxu/);
+  assert.match(about, /https:\/\/www\.linkedin\.com\/in\/axu25/);
+  assert.match(about, /https:\/\/x\.com\/austixu/);
 });
 
 test("the site uses Mitchell's licensed fallback type and measured neutral palette", async () => {
-  const [layout, styles, dashboard] = await readSources(
+  const [layout, styles, dashboard, skillCloud, worldMap] = await readSources(
     "app/layout.tsx",
     "app/globals.css",
     "app/components/portfolio-dashboard.tsx",
+    "app/components/physics-skill-cloud.tsx",
+    "app/components/interactive-world-map.tsx",
   );
 
   assert.match(layout, /@fontsource\/inter\/latin-400\.css/);
   assert.match(layout, /@fontsource\/roboto-mono\/latin-400\.css/);
-  assert.match(styles, /--sans:\s*"Inter"/);
+  assert.match(styles, /font-family:\s*"Union Fallback"/);
+  assert.match(styles, /--sans:\s*"Union Fallback",\s*"Inter"/);
   assert.match(styles, /--mono:\s*"Roboto Mono"/);
   assert.match(styles, /--shell-bg:\s*#13161b/i);
   assert.match(styles, /--shell-panel:\s*#0c0e12/i);
@@ -128,10 +129,13 @@ test("the site uses Mitchell's licensed fallback type and measured neutral palet
   assert.match(styles, /--shell-code-keyword:\s*#f670c7/i);
   assert.match(styles, /--shell-code-ident:\s*#53b1fd/i);
   assert.match(styles, /--shell-code-comment:\s*#47cd89/i);
-  assert.match(styles, /color-mix\(in srgb,\s*var\(--tag-hue\)\s*12%/i);
-  assert.match(styles, /color-mix\(in srgb,\s*var\(--tag-hue\)\s*36%/i);
-  assert.match(styles, /color-mix\(in srgb,\s*var\(--tag-hue\)\s*80%/i);
-  assert.match(styles, /url\(["']\/world-map-dots\.png["']\)/i);
+  assert.match(styles, /color-mix\(in srgb,\s*var\(--skill-hue\)\s*12%/i);
+  assert.match(styles, /color-mix\(in srgb,\s*var\(--skill-hue\)\s*36%/i);
+  assert.match(styles, /color-mix\(in srgb,\s*var\(--skill-hue\)\s*80%/i);
+  assert.match(worldMap, /url\(["']\/world-map-dots\.png["']\)/i);
+  assert.match(worldMap, /world-map-dots\.json/);
+  assert.match(skillCloud, /matter-js/);
+  assert.match(styles, /grid-template-areas:\s*"code skills \."\s*"map projects \."/);
   assert.match(styles, /animation-delay:\s*0s\s*!important/i);
   assert.match(styles, /height:\s*248px/);
   assert.match(styles, /border-radius:\s*12px/);

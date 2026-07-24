@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import { LuMoon } from "react-icons/lu";
 import { projects } from "../data/projects";
+import { InteractiveWorldMap } from "./interactive-world-map";
+import { PhysicsSkillCloud } from "./physics-skill-cloud";
 import { PrimaryDock } from "./site-shell";
 
 type CodeSegment = {
@@ -66,62 +68,17 @@ const codeRowStarts = codeRows.map((_, index) =>
     ),
 );
 
-const skills = [
-  { id: "inference", label: "Inference Systems", hue: "#ee46bc" },
-  { id: "kernels", label: "GPU Kernels", hue: "#7a5af8" },
-  { id: "rl", label: "Reinforcement Learning", hue: "#ef6820" },
-  { id: "evaluation", label: "Agent Evaluation", hue: "#2e90fa" },
-  { id: "uncertainty", label: "Uncertainty", hue: "#17b26a" },
-  { id: "data-viz", label: "Data Visualization", hue: "#7f56d9" },
-  { id: "rocm", label: "C++ / ROCm", hue: "#0ba5ec" },
-  { id: "python", label: "Python", hue: "#f63d68" },
-  { id: "markets", label: "Market Models", hue: "#15b79e" },
-  { id: "research", label: "Research Design", hue: "#f79009" },
-] as const;
-
 const projectLabels: Record<(typeof projects)[number]["slug"], string> = {
   "amd-inference": "AMD inference",
   "coup-rl-bot": "Coup RL bot",
   "heston-regime-lab": "Heston regime lab",
 };
 
-const socialLinks = [
-  {
-    href: "https://github.com/austxu",
-    label: "GitHub",
-    icon: FaGithub,
-  },
-  {
-    href: "https://www.linkedin.com/in/axu25",
-    label: "LinkedIn",
-    icon: FaLinkedinIn,
-  },
-  {
-    href: "https://x.com/austixu",
-    label: "X",
-    icon: FaXTwitter,
-  },
-] as const;
-
 function ProfileSummary({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={mobile ? "profile-summary mobile-profile" : "profile-summary desktop-profile"}>
       <span className="profile-avatar" aria-hidden="true">AX</span>
-      <p>Hello, it&apos;s Austin <span aria-hidden="true">👋🏻</span></p>
-      <nav className="profile-socials" aria-label="Austin Xu on social media">
-        {socialLinks.map(({ href, label, icon: Icon }) => (
-          <a
-            href={href}
-            key={label}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`${label} (opens in a new tab)`}
-            title={label}
-          >
-            <Icon aria-hidden="true" />
-          </a>
-        ))}
-      </nav>
+      <p>Hello, it’s Austin <span aria-hidden="true">👋🏻</span></p>
     </div>
   );
 }
@@ -160,24 +117,26 @@ function ClockAndTheme({
 
   return (
     <div className="utility-cluster">
-      <div className="clock-chip" aria-label={`Los Angeles time ${clock.time}, ${clock.date}`}>
-        <span aria-hidden="true">◔</span>
-        <span>{clock.time}</span>
+      <div className="clock-cluster" aria-label={`Los Angeles time ${clock.time}, ${clock.date}`}>
+        <span className="clock-time">
+          <LuMoon aria-hidden="true" />
+          {clock.time}
+        </span>
         <span className="clock-date">{clock.date}</span>
       </div>
-      <button
-        className="theme-control"
-        type="button"
-        role="switch"
-        aria-checked={isDark}
-        aria-label={`Use ${isDark ? "light" : "dark"} theme`}
-        onClick={onToggle}
-      >
-        <span className="theme-track" aria-hidden="true">
+      <div className="theme-control">
+        <button
+          className="theme-track"
+          type="button"
+          role="switch"
+          aria-checked={isDark}
+          aria-label={`Use ${isDark ? "light" : "dark"} theme`}
+          onClick={onToggle}
+        >
           <span className="theme-thumb" />
-        </span>
+        </button>
         <span>{isDark ? "Dark" : "Light"}</span>
-      </button>
+      </div>
     </div>
   );
 }
@@ -195,22 +154,27 @@ function CodePanel() {
       return () => window.clearTimeout(immediate);
     }
 
-    let interval: number | undefined;
+    let animationFrame = 0;
     const delay = window.setTimeout(() => {
-      interval = window.setInterval(() => {
-        setTypedCharacters((current) => {
-          if (current >= totalCodeCharacters) {
-            if (interval) window.clearInterval(interval);
-            return totalCodeCharacters;
-          }
-          return Math.min(current + 2, totalCodeCharacters);
-        });
-      }, 18);
-    }, 650);
+      const startTime = performance.now();
+      const typeNextCharacters = (time: number) => {
+        const nextCount = Math.min(
+          totalCodeCharacters,
+          Math.floor((time - startTime) / 18),
+        );
+        setTypedCharacters(nextCount);
+
+        if (nextCount < totalCodeCharacters) {
+          animationFrame = window.requestAnimationFrame(typeNextCharacters);
+        }
+      };
+
+      animationFrame = window.requestAnimationFrame(typeNextCharacters);
+    }, 800);
 
     return () => {
       window.clearTimeout(delay);
-      if (interval) window.clearInterval(interval);
+      window.cancelAnimationFrame(animationFrame);
     };
   }, []);
 
@@ -245,7 +209,14 @@ function CodePanel() {
       <div className="tool-panel code-panel" aria-hidden="true">
         <div className="code-scroll" ref={scrollRef}>
           <div className="line-numbers">
-            {codeRows.map((_, index) => <span key={index}>{index + 1}</span>)}
+            {codeRows.map((_, index) => (
+              <span
+                className={codeRowStarts[index] <= typedCharacters ? "line-number-visible" : undefined}
+                key={index}
+              >
+                {index + 1}
+              </span>
+            ))}
           </div>
           <pre className="code-body">
             <code>
@@ -301,19 +272,7 @@ function SkillsPanel() {
     >
       <h2 className="sr-only" id="skills-panel-title">Technical focus areas</h2>
       <div className="tool-panel skills-panel">
-        <ul className="skill-cloud">
-          {skills.map((skill, index) => (
-            <li
-              key={skill.id}
-              style={{
-                "--tag-hue": skill.hue,
-                "--tag-delay": `${index * 45}ms`,
-              } as React.CSSProperties}
-            >
-              <span className="skill-tag">{skill.label}</span>
-            </li>
-          ))}
-        </ul>
+        <PhysicsSkillCloud />
       </div>
     </section>
   );
@@ -328,7 +287,7 @@ function MapPanel() {
     >
       <h2 className="sr-only" id="map-panel-title">Based in Los Angeles, California</h2>
       <div className="tool-panel map-panel">
-        <div className="dot-map" aria-hidden="true" />
+        <InteractiveWorldMap className="interactive-dot-map" />
         <button
           className="location-marker"
           type="button"
@@ -378,7 +337,7 @@ function ProjectsPanel() {
           >
             <Image
               className="access-bear"
-              src="/bear-cameo.png"
+              src="/bear-cameo-reencoded.png"
               alt=""
               width={460}
               height={460}
@@ -387,27 +346,25 @@ function ProjectsPanel() {
             />
           </button>
         </div>
-        <div className="project-rail-chip" aria-hidden="true">
-          {projectsOpen ? "✓" : "⌘"}
-        </div>
-
         <div className="project-panel-content">
           <div className="project-closed-state" aria-hidden={projectsOpen}>
-            <p className="project-label" id="projects-panel-title">Project archive</p>
-            <button
-              className="archive-trigger"
-              type="button"
-              aria-expanded={projectsOpen}
-              aria-controls="project-drawer"
-              tabIndex={projectsOpen ? -1 : undefined}
-              onClick={toggleProjects}
-            >
-              <span aria-hidden="true">⌘</span>
-              <span>Boop to browse</span>
-            </button>
-            <p className="project-note">
-              Three public case studies. No sign-in required.
-            </p>
+            <div className="project-form-fields">
+              <p className="project-label" id="projects-panel-title">My projects</p>
+              <button
+                className="archive-trigger"
+                type="button"
+                aria-expanded={projectsOpen}
+                aria-controls="project-drawer"
+                tabIndex={projectsOpen ? -1 : undefined}
+                onClick={toggleProjects}
+              >
+                <span aria-hidden="true">⌘</span>
+                <span>Boop to browse</span>
+              </button>
+              <p className="project-note">
+                Three public systems case studies. Open to everyone.
+              </p>
+            </div>
             <Link className="skeuo-button" href="/projects" tabIndex={projectsOpen ? -1 : undefined}>
               View projects
             </Link>
