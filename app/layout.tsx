@@ -14,10 +14,15 @@ export const metadata: Metadata = {
     url: "https://austxu.dev",
     siteName: "Austin Xu",
     title: "Austin Xu — models, machines, markets",
-    description: "A cinematic research portfolio about faster inference, bluffing agents, and uncertain systems.",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Austin Xu — models, machines, markets" }],
+    description: "A colorful four-room research portfolio about faster inference, bluffing agents, and uncertain systems.",
+    images: [{ url: "https://austxu.dev/og.png", width: 1200, height: 630, alt: "Austin Xu — models, machines, markets" }],
   },
-  twitter: { card: "summary_large_image", title: "Austin Xu — models, machines, markets", description: "Research across inference, deception, and volatility.", images: ["/og.png"] },
+  twitter: {
+    card: "summary_large_image",
+    title: "Austin Xu — models, machines, markets",
+    description: "Research across inference, deception, and volatility.",
+    images: ["https://austxu.dev/og.png"],
+  },
   icons: {
     icon: [{ url: "/bear-cameo.png", type: "image/png", sizes: "460x460" }],
     shortcut: "/bear-cameo.png",

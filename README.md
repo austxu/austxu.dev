@@ -1,8 +1,9 @@
 # austxu.dev
 
-Cinematic, static-export compatible portfolio for Austin Xu: models, machines,
-and markets. The intended public repository is `austxu/austxu.dev` and the
-canonical domain is `https://austxu.dev`.
+Colorful, static-export compatible portfolio for Austin Xu: models, machines,
+and markets. The homepage is a four-room bento for Home, Blog, Projects, and
+About. The intended public repository is `austxu/austxu.dev` and the canonical
+domain is `https://austxu.dev`.
 
 ## Local development
 
@@ -23,7 +24,8 @@ npm test
 
 ## Routes
 
-- `/` — cinematic portfolio chapters for GPU inference, strategic deception, and market volatility
+- `/` — four-room portfolio dashboard with a playful public project reveal
+- `/projects` — public overview of all three case studies
 - `/work/amd-inference` — audited AMD inference case study
 - `/work/coup-rl-bot` — Gen5 1v1 Coup case study and shell
 - `/work/heston-regime-lab` — Heston regime lab case study and shell
