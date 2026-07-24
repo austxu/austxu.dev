@@ -59,14 +59,22 @@ export function ForestLanding() {
       <div className="forest-scene" ref={sceneRef} aria-hidden="true">
         <Image className="forest-plate" src="/forest-hero.webp" alt="" fill priority sizes="100vw" />
         <div className="forest-color-wash" />
+        <div className="forest-sun-glow" />
         <div className="forest-mist forest-mist-back" />
         <div className="forest-mist forest-mist-front" />
+        <div className="forest-canopy" />
         <div className="forest-foliage forest-foliage-back" />
+        <div className="forest-understory" />
         <div className="forest-foliage forest-foliage-front" />
         <span className="forest-firefly firefly-one" />
         <span className="forest-firefly firefly-two" />
         <span className="forest-firefly firefly-three" />
         <span className="forest-firefly firefly-four" />
+        <span className="forest-leaf leaf-one" />
+        <span className="forest-leaf leaf-two" />
+        <span className="forest-leaf leaf-three" />
+        <span className="forest-leaf leaf-four" />
+        <span className="forest-leaf leaf-five" />
         <div className="forest-vignette" />
       </div>
 
