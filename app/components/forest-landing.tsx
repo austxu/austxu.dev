@@ -60,6 +60,10 @@ export function ForestLanding() {
         <Image className="forest-plate" src="/forest-hero.webp" alt="" fill priority sizes="100vw" />
         <div className="forest-color-wash" />
         <div className="forest-sun-glow" />
+        <div className="forest-light-ray ray-one" />
+        <div className="forest-light-ray ray-two" />
+        <div className="forest-breeze breeze-one" />
+        <div className="forest-breeze breeze-two" />
         <div className="forest-mist forest-mist-back" />
         <div className="forest-mist forest-mist-front" />
         <div className="forest-canopy" />
@@ -75,6 +79,12 @@ export function ForestLanding() {
         <span className="forest-leaf leaf-three" />
         <span className="forest-leaf leaf-four" />
         <span className="forest-leaf leaf-five" />
+        <span className="forest-pollen pollen-one" />
+        <span className="forest-pollen pollen-two" />
+        <span className="forest-pollen pollen-three" />
+        <span className="forest-pollen pollen-four" />
+        <span className="forest-pollen pollen-five" />
+        <span className="forest-pollen pollen-six" />
         <div className="forest-vignette" />
       </div>
 
