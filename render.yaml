@@ -41,3 +41,7 @@ projects:
                 value: json
               - key: CORS_ORIGINS
                 value: https://heston.austxu.dev
+              # Supply an external Redis/Valkey URL from Oracle, Railway, or another
+              # Redis provider to preserve calibration and regime caches across restarts.
+              - key: REDIS_URL
+                sync: false

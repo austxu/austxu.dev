@@ -38,6 +38,11 @@ https://coup-api.austxu.dev
 https://heston-api.austxu.dev
 ```
 
+The Heston API already supports an external Redis/Valkey cache through `REDIS_URL`. Add
+that value to the Render service (or point it at the Redis instance on Oracle/Railway) so
+calibration, surface, and regime results survive API restarts. Without it, the API falls
+back to an in-process cache and remains functional, but a sleeping service must recompute.
+
 Create/sync the Blueprint from the Render dashboard. Do not paste secrets into chat; the
 Blueprint generates the Coup `SECRET_KEY`, and all other environment values are non-secret.
 The existing Railway `chic-passion` project remains available as a rollback path.
