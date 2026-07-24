@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { FaGithub, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import { LuMoon } from "react-icons/lu";
 import { projects } from "../data/projects";
 import { InteractiveWorldMap } from "./interactive-world-map";
@@ -74,11 +75,43 @@ const projectLabels: Record<(typeof projects)[number]["slug"], string> = {
   "heston-regime-lab": "Heston regime lab",
 };
 
+const socialLinks = [
+  {
+    href: "https://x.com/austixu",
+    label: "X",
+    icon: FaXTwitter,
+  },
+  {
+    href: "https://www.linkedin.com/in/axu25",
+    label: "LinkedIn",
+    icon: FaLinkedinIn,
+  },
+  {
+    href: "https://github.com/austxu",
+    label: "GitHub",
+    icon: FaGithub,
+  },
+];
+
 function ProfileSummary({ mobile = false }: { mobile?: boolean }) {
   return (
     <div className={mobile ? "profile-summary mobile-profile" : "profile-summary desktop-profile"}>
       <span className="profile-avatar" aria-hidden="true">AX</span>
       <p>Hello, it’s Austin <span aria-hidden="true">👋🏻</span></p>
+      <nav className="profile-socials" aria-label="Austin Xu on social media">
+        {socialLinks.map(({ href, label, icon: Icon }) => (
+          <a
+            href={href}
+            aria-label={`${label} (opens in a new tab)`}
+            key={label}
+            rel="noreferrer"
+            target="_blank"
+            title={label}
+          >
+            <Icon aria-hidden="true" />
+          </a>
+        ))}
+      </nav>
     </div>
   );
 }

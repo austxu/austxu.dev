@@ -104,9 +104,11 @@ test("the bottom dock has the requested order and social destinations remain pre
   assert.match(shell, /aria-current=/);
   assert.match(dashboard, /<PrimaryDock\s*\/>/);
 
-  assert.match(about, /https:\/\/github\.com\/austxu/);
-  assert.match(about, /https:\/\/www\.linkedin\.com\/in\/axu25/);
-  assert.match(about, /https:\/\/x\.com\/austixu/);
+  for (const source of [dashboard, about]) {
+    assert.match(source, /https:\/\/github\.com\/austxu/);
+    assert.match(source, /https:\/\/www\.linkedin\.com\/in\/axu25/);
+    assert.match(source, /https:\/\/x\.com\/austixu/);
+  }
 });
 
 test("the site uses Mitchell's licensed fallback type and measured neutral palette", async () => {
@@ -135,7 +137,9 @@ test("the site uses Mitchell's licensed fallback type and measured neutral palet
   assert.match(worldMap, /url\(["']\/world-map-dots\.png["']\)/i);
   assert.match(worldMap, /world-map-dots\.json/);
   assert.match(skillCloud, /matter-js/);
-  assert.match(styles, /grid-template-areas:\s*"code skills \."\s*"map projects \."/);
+  assert.match(styles, /grid-template-areas:\s*"code skills"\s*"map projects"/);
+  assert.match(styles, /grid-template-rows:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.doesNotMatch(styles, /grid-template-areas:\s*"code skills \."\s*"map projects \."/);
   assert.match(styles, /animation-delay:\s*0s\s*!important/i);
   assert.match(styles, /height:\s*248px/);
   assert.match(styles, /border-radius:\s*12px/);

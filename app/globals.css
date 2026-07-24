@@ -761,6 +761,29 @@ h2 em {
   font-weight: 600;
 }
 
+.profile-socials {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 2px;
+}
+
+.profile-socials a {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  color: var(--shell-text-muted);
+  font-size: 13px;
+  transition: background-color .15s ease, color .15s ease;
+}
+
+.profile-socials a:hover {
+  background: var(--shell-tertiary);
+  color: var(--shell-text);
+}
+
 .mobile-profile {
   display: none;
 }
@@ -858,7 +881,10 @@ h2 em {
 
 .portfolio-main {
   min-width: 0;
+  min-height: 0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .mitchell-grid {
@@ -1051,7 +1077,7 @@ h2 em {
   position: absolute;
   z-index: 5;
   left: 118px;
-  top: 120px;
+  top: 128px;
   width: 40px;
   height: 40px;
   display: grid;
@@ -1107,7 +1133,7 @@ h2 em {
   position: absolute;
   z-index: 6;
   left: 153px;
-  top: 120px;
+  top: 128px;
   width: max-content;
   max-width: calc(100% - 172px);
   display: flex;
@@ -1163,8 +1189,8 @@ h2 em {
 .bear-access-button {
   position: absolute;
   z-index: 4;
-  left: 66px;
-  top: 124px;
+  left: 50%;
+  top: 50%;
   width: 74px;
   height: 74px;
   display: grid;
@@ -1173,7 +1199,7 @@ h2 em {
   border: 0;
   background: transparent;
   cursor: pointer;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, calc(-50% - 4px));
 }
 
 .access-bear {
@@ -1497,19 +1523,28 @@ h2 em {
 }
 
 @media (min-width: 768px) {
+  .portfolio-shell {
+    height: 100svh;
+  }
+
   .mitchell-grid {
+    min-height: 0;
+    flex: 1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: 32px;
     padding: 32px;
   }
-}
 
-@media (min-width: 1280px) {
+  .panel-frame,
+  .tool-panel {
+    height: 100%;
+  }
+
   .mitchell-grid {
     grid-template-areas:
-      "code skills ."
-      "map projects .";
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+      "code skills"
+      "map projects";
   }
 
   .panel-frame[data-panel="code"] {
@@ -1550,6 +1585,10 @@ h2 em {
     min-height: 48px;
     display: flex;
     padding: 16px 16px 0;
+  }
+
+  .mobile-profile .profile-socials {
+    margin-left: auto;
   }
 
   .utility-cluster {
@@ -1603,6 +1642,15 @@ h2 em {
 }
 
 @media (max-width: 359px) {
+  .profile-summary {
+    gap: 8px;
+  }
+
+  .profile-socials a {
+    width: 26px;
+    height: 26px;
+  }
+
   .physics-skill-cloud__chip {
     padding: 2px 8px;
     font-size: 12px;
