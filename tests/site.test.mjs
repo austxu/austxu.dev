@@ -37,8 +37,24 @@ test("the homepage contains exactly Mitchell's four spatial left panels", async 
   assert.match(source, /line-numbers/);
   assert.match(source, /skill-cloud/);
   assert.match(source, /dot-map/);
+  assert.match(source, /--tag-hue/);
+  assert.doesNotMatch(source, /continent-(?:na|sa|eu|af|as|au)/);
   assert.match(source, /role=["']switch["']/);
   assert.doesNotMatch(source, /fetch\(|WebSocket|socket\.io/i);
+});
+
+test("the location panel uses generated Natural Earth map data", async () => {
+  await access(new URL("public/world-map-dots.png", root));
+  const mapData = JSON.parse(
+    await readFile(new URL("public/data/world-map-dots.json", root), "utf8"),
+  );
+
+  assert.equal(mapData.width, 1024);
+  assert.equal(mapData.height, 488);
+  assert.equal(mapData.projection.name, "webMercator");
+  assert.equal(mapData.projection.centralMeridian, 0);
+  assert.ok(mapData.dots.length > 4000);
+  assert.ok(mapData.dots.length < 7000);
 });
 
 test("the project room reveals public case studies accessibly", async () => {
@@ -109,6 +125,14 @@ test("the site uses Mitchell's licensed fallback type and measured neutral palet
   assert.match(styles, /--shell-bg:\s*#13161b/i);
   assert.match(styles, /--shell-panel:\s*#0c0e12/i);
   assert.match(styles, /--shell-border:\s*#22262f/i);
+  assert.match(styles, /--shell-code-keyword:\s*#f670c7/i);
+  assert.match(styles, /--shell-code-ident:\s*#53b1fd/i);
+  assert.match(styles, /--shell-code-comment:\s*#47cd89/i);
+  assert.match(styles, /color-mix\(in srgb,\s*var\(--tag-hue\)\s*12%/i);
+  assert.match(styles, /color-mix\(in srgb,\s*var\(--tag-hue\)\s*36%/i);
+  assert.match(styles, /color-mix\(in srgb,\s*var\(--tag-hue\)\s*80%/i);
+  assert.match(styles, /url\(["']\/world-map-dots\.png["']\)/i);
+  assert.match(styles, /animation-delay:\s*0s\s*!important/i);
   assert.match(styles, /height:\s*248px/);
   assert.match(styles, /border-radius:\s*12px/);
   assert.match(styles, /\.bottom-dock/);

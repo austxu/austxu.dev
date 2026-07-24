@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
     "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
+    "generate:world-map": "node scripts/generate-world-map.mjs",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "test": "npm run validate:content && npm run build && node --test tests/site.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
@@ -36,9 +37,11 @@
     "eslint-config-next": "16.2.6",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",
+    "topojson-client": "3.1.0",
     "typescript": "5.9.3",
     "vinext": "0.0.50",
     "vite": "8.0.13",
+    "world-atlas": "2.0.2",
     "wrangler": "4.92.0"
   },
   "type": "module"

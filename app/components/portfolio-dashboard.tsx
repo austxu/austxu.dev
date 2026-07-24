@@ -67,16 +67,16 @@ const codeRowStarts = codeRows.map((_, index) =>
 );
 
 const skills = [
-  { id: "inference", label: "Inference Systems", x: 34, y: 28, rotate: -28, tone: "blue" },
-  { id: "kernels", label: "GPU Kernels", x: 63, y: 25, rotate: 24, tone: "amber" },
-  { id: "rl", label: "Reinforcement Learning", x: 55, y: 54, rotate: -9, tone: "pink" },
-  { id: "evaluation", label: "Agent Evaluation", x: 74, y: 51, rotate: -34, tone: "rose" },
-  { id: "uncertainty", label: "Uncertainty", x: 71, y: 72, rotate: 8, tone: "green" },
-  { id: "data-viz", label: "Data Visualization", x: 40, y: 50, rotate: 34, tone: "blue" },
-  { id: "rocm", label: "C++ / ROCm", x: 25, y: 62, rotate: 72, tone: "purple" },
-  { id: "python", label: "Python", x: 17, y: 71, rotate: 84, tone: "amber" },
-  { id: "markets", label: "Market Models", x: 53, y: 78, rotate: 4, tone: "green" },
-  { id: "research", label: "Research Design", x: 31, y: 81, rotate: -3, tone: "pink" },
+  { id: "inference", label: "Inference Systems", hue: "#ee46bc" },
+  { id: "kernels", label: "GPU Kernels", hue: "#7a5af8" },
+  { id: "rl", label: "Reinforcement Learning", hue: "#ef6820" },
+  { id: "evaluation", label: "Agent Evaluation", hue: "#2e90fa" },
+  { id: "uncertainty", label: "Uncertainty", hue: "#17b26a" },
+  { id: "data-viz", label: "Data Visualization", hue: "#7f56d9" },
+  { id: "rocm", label: "C++ / ROCm", hue: "#0ba5ec" },
+  { id: "python", label: "Python", hue: "#f63d68" },
+  { id: "markets", label: "Market Models", hue: "#15b79e" },
+  { id: "research", label: "Research Design", hue: "#f79009" },
 ] as const;
 
 const projectLabels: Record<(typeof projects)[number]["slug"], string> = {
@@ -293,18 +293,6 @@ function CodePanel() {
 }
 
 function SkillsPanel() {
-  const [offsets, setOffsets] = useState<Record<string, { x: number; y: number }>>({});
-
-  const moveSkill = (id: string, x: number, y: number) => {
-    setOffsets((current) => {
-      const previous = current[id] ?? { x: 0, y: 0 };
-      return {
-        ...current,
-        [id]: { x: previous.x + x, y: previous.y + y },
-      };
-    });
-  };
-
   return (
     <section
       className="panel-frame"
@@ -314,54 +302,17 @@ function SkillsPanel() {
       <h2 className="sr-only" id="skills-panel-title">Technical focus areas</h2>
       <div className="tool-panel skills-panel">
         <ul className="skill-cloud">
-          {skills.map((skill, index) => {
-            const offset = offsets[skill.id] ?? { x: 0, y: 0 };
-            return (
-              <li
-                key={skill.id}
-                style={{
-                  "--tag-x": `${skill.x}%`,
-                  "--tag-y": `${skill.y}%`,
-                  "--tag-rotate": `${skill.rotate}deg`,
-                  "--tag-delay": `${index * 55}ms`,
-                  "--drag-x": `${offset.x}px`,
-                  "--drag-y": `${offset.y}px`,
-                } as React.CSSProperties}
-              >
-                <button
-                  className={`skill-tag skill-tag-${skill.tone}`}
-                  type="button"
-                  aria-label={`${skill.label}. Drag with a pointer or move with the arrow keys.`}
-                  onPointerDown={(event) => {
-                    event.currentTarget.setPointerCapture(event.pointerId);
-                  }}
-                  onPointerMove={(event) => {
-                    if (
-                      event.currentTarget.hasPointerCapture(event.pointerId) &&
-                      event.buttons === 1
-                    ) {
-                      moveSkill(skill.id, event.movementX, event.movementY);
-                    }
-                  }}
-                  onKeyDown={(event) => {
-                    const distance = event.shiftKey ? 16 : 6;
-                    const movement = {
-                      ArrowLeft: [-distance, 0],
-                      ArrowRight: [distance, 0],
-                      ArrowUp: [0, -distance],
-                      ArrowDown: [0, distance],
-                    }[event.key];
-                    if (movement) {
-                      event.preventDefault();
-                      moveSkill(skill.id, movement[0], movement[1]);
-                    }
-                  }}
-                >
-                  {skill.label}
-                </button>
-              </li>
-            );
-          })}
+          {skills.map((skill, index) => (
+            <li
+              key={skill.id}
+              style={{
+                "--tag-hue": skill.hue,
+                "--tag-delay": `${index * 45}ms`,
+              } as React.CSSProperties}
+            >
+              <span className="skill-tag">{skill.label}</span>
+            </li>
+          ))}
         </ul>
       </div>
     </section>
@@ -377,14 +328,7 @@ function MapPanel() {
     >
       <h2 className="sr-only" id="map-panel-title">Based in Los Angeles, California</h2>
       <div className="tool-panel map-panel">
-        <div className="dot-map" aria-hidden="true">
-          <span className="continent continent-na" />
-          <span className="continent continent-sa" />
-          <span className="continent continent-eu" />
-          <span className="continent continent-af" />
-          <span className="continent continent-as" />
-          <span className="continent continent-au" />
-        </div>
+        <div className="dot-map" aria-hidden="true" />
         <button
           className="location-marker"
           type="button"
@@ -392,6 +336,7 @@ function MapPanel() {
           aria-label="Based in Los Angeles, California"
         >
           <span className="location-ping" />
+          <span className="location-halo" />
           <span className="location-core" />
         </button>
         <div className="location-tooltip" id="location-tooltip" role="tooltip">
@@ -461,7 +406,7 @@ function ProjectsPanel() {
               <span>Boop to browse</span>
             </button>
             <p className="project-note">
-              Three public case studies. The bear adds ceremony, not access control.
+              Three public case studies. No sign-in required.
             </p>
             <Link className="skeuo-button" href="/projects" tabIndex={projectsOpen ? -1 : undefined}>
               View projects
